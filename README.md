@@ -24,8 +24,7 @@ Coral-Compass/
 ├── install_coral.ps1      # Windows installer for Coral CLI
 ├── coral_setup.ps1        # Lints + adds the source, runs sample query
 ├── .env.example           # OPENAI_API_KEY placeholder
-├── .gitignore
-└── screenshots/
+└── .gitignore
 ```
 
 ## 🚀 Quick start

@@ -4,8 +4,6 @@ Smart study planner that **SQL-joins your assignments with your notes** and gene
 
 Built with Python, Streamlit, Pandas, OpenAI, and **[Coral](https://withcoral.com)** — one SQL interface over local files. A DuckDB engine is bundled as a fallback so the app works even before Coral is installed.
 
----
-
 ## ✨ Features
 
 - Dashboard of all assignments and notes
@@ -13,8 +11,6 @@ Built with Python, Streamlit, Pandas, OpenAI, and **[Coral](https://withcoral.co
 - Auto-calculates days remaining and priority (Urgent / High / Medium / Low)
 - AI-generated study plan for today via OpenAI, with rule-based fallback
 - Filter by subject and deadline window
-
----
 
 ## 🗂 Project structure
 
@@ -31,8 +27,6 @@ Coral-Compass/
 ├── .gitignore
 └── screenshots/
 ```
-
----
 
 ## 🚀 Quick start
 
@@ -99,8 +93,6 @@ Open the URL Streamlit prints (usually http://localhost:8501).
 
 The app auto-detects whether `coral` is on PATH. The **Coral SQL** tab lets you run queries through Coral live, or through DuckDB as a fallback.
 
----
-
 ## 🔗 The join (Coral SQL)
 
 ```sql
@@ -133,8 +125,6 @@ Sample output:
 
 Take a screenshot of this output for your submission.
 
----
-
 ## 🧱 Architecture
 
 ```
@@ -143,8 +133,6 @@ CSV / file sources  ──▶  Coral (SQL over files)  ──▶  Streamlit UI  
                           └── fallback: DuckDB (in-process)
 ```
 
----
-
 ## 🎬 Demo video script (3 min)
 
 - 0:00–0:30 — Problem: students miss deadlines, notes are scattered.
@@ -152,14 +140,10 @@ CSV / file sources  ──▶  Coral (SQL over files)  ──▶  Streamlit UI  
 - 1:00–2:00 — `coral sql` joining `file.assignments` and `file.notes`.
 - 2:00–3:00 — Streamlit dashboard + AI-generated study plan.
 
----
-
 ## ☁️ Deployment
 
 - **Streamlit Community Cloud** — push to GitHub, deploy from streamlit.io/cloud, set `OPENAI_API_KEY` as a secret. (Coral is local-only, so cloud deployments use the DuckDB fallback automatically.)
 - **Render** — Web Service, build command `pip install -r requirements.txt`, start command `streamlit run app.py --server.port $PORT --server.address 0.0.0.0`.
-
----
 
 ## 📝 Notes for submission
 

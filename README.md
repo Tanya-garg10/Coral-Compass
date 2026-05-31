@@ -133,3 +133,17 @@ CSV / file sources  ──▶  Coral (SQL over files)  ──▶  Streamlit UI  
                           └── fallback: DuckDB (in-process)
 ```
 
+## 🚧 Future improvements
+
+- **Live data sources** — replace CSVs with Google Calendar, Notion, and Google Drive via Coral source specs so assignments and notes sync automatically.
+- **Smart reminders** — email / Slack / Discord notifications for upcoming deadlines, generated from the same SQL view.
+- **Per-user accounts** — auth + per-student data so the app works for a class, not just one user.
+- **Study session tracking** — log time spent per topic and feed it back into the AI plan to recommend weaker areas.
+- **Pomodoro mode** — built-in 25/5 timer linked to each generated study block.
+- **Spaced repetition** — flashcards generated from notes, scheduled with an SM-2 style algorithm.
+- **Calendar export** — one-click export of today's plan as `.ics` so it lands on any calendar app.
+- **Mobile-friendly UI** — responsive layout and PWA install for on-the-go use.
+- **Coral MCP integration** — expose the same SQL runtime to Claude / Cursor / Kiro via `coral mcp` so an agent can plan and reschedule for you.
+- **Multi-user deployment** — Dockerfile + Postgres-backed catalog for hosted use.
+
+Made with 🪸 and ❤️ by [Tanya Garg](https://github.com/Tanya-garg10).

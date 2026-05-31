@@ -92,13 +92,47 @@ def run_coral(sql: str) -> tuple[str, str]:
 
 # ---------- AI study plan ----------
 def generate_ai_plan(merged: pd.DataFrame) -> str:
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
+    """Build today's study plan via an OpenAI-compatible chat API.
+
+    Supports any provider that exposes the OpenAI chat-completions schema:
+    OpenAI, Cerebras, OpenRouter, Groq, Together, etc. Configure via env:
+
+        AI_API_KEY=...                 # required
+        AI_BASE_URL=...                # optional (defaults to provider-specific)
+        AI_MODEL=...                   # optional (defaults to provider-specific)
+
+    For backwards compatibility we also read OPENAI_API_KEY,
+    CEREBRAS_API_KEY, and OPENROUTER_API_KEY.
+    """
+    # Pick the first key that is set, and a sensible default base_url+model
+    # for that provider.
+    if os.getenv("CEREBRAS_API_KEY"):
+        api_key = os.getenv("CEREBRAS_API_KEY")
+        base_url = os.getenv("AI_BASE_URL", "https://api.cerebras.ai/v1")
+        model = os.getenv("AI_MODEL", "llama-3.3-70b")
+    elif os.getenv("OPENROUTER_API_KEY"):
+        api_key = os.getenv("OPENROUTER_API_KEY")
+        base_url = os.getenv("AI_BASE_URL", "https://openrouter.ai/api/v1")
+        model = os.getenv("AI_MODEL", "meta-llama/llama-3.3-70b-instruct:free")
+    elif os.getenv("OPENAI_API_KEY"):
+        api_key = os.getenv("OPENAI_API_KEY")
+        base_url = os.getenv("AI_BASE_URL")  # SDK default
+        model = os.getenv("AI_MODEL", "gpt-4o-mini")
+    elif os.getenv("AI_API_KEY"):
+        api_key = os.getenv("AI_API_KEY")
+        base_url = os.getenv("AI_BASE_URL")
+        model = os.getenv("AI_MODEL", "gpt-4o-mini")
+    else:
         return _fallback_plan(merged)
+
     try:
         from openai import OpenAI
 
-        client = OpenAI(api_key=api_key)
+        kwargs = {"api_key": api_key}
+        if base_url:
+            kwargs["base_url"] = base_url
+        client = OpenAI(**kwargs)
+
         rows = "\n".join(
             f"- {r.subject}: {r.assignment} (due {r.deadline}, "
             f"topic: {r.note_topic}, {r.days_left} days left)"
@@ -111,7 +145,7 @@ def generate_ai_plan(merged: pd.DataFrame) -> str:
             f"Assignments:\n{rows}\n"
         )
         resp = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=model,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.4,
         )
@@ -167,6 +201,16 @@ def main():
         st.sidebar.success("Coral CLI: detected ✅")
     else:
         st.sidebar.info("Coral CLI: not on PATH. Using DuckDB fallback.")
+
+    st.sidebar.subheader("AI provider")
+    if os.getenv("CEREBRAS_API_KEY"):
+        st.sidebar.success("Cerebras detected")
+    elif os.getenv("OPENROUTER_API_KEY"):
+        st.sidebar.success("OpenRouter detected")
+    elif os.getenv("OPENAI_API_KEY") or os.getenv("AI_API_KEY"):
+        st.sidebar.success("OpenAI-compatible key detected")
+    else:
+        st.sidebar.info("No AI key. Rule-based plan only.")
 
     # Top metrics
     c1, c2, c3 = st.columns(3)
@@ -257,8 +301,9 @@ def main():
             st.markdown(plan)
         else:
             st.info(
-                "Click the button to generate a plan. Set OPENAI_API_KEY in "
-                ".env for AI; otherwise a rule-based plan is shown."
+                "Click the button to generate a plan. Set CEREBRAS_API_KEY "
+                "(or OPENAI_API_KEY / OPENROUTER_API_KEY) in .env to use AI; "
+                "otherwise a rule-based plan is shown."
             )
 
 

@@ -109,7 +109,7 @@ def generate_ai_plan(merged: pd.DataFrame) -> str:
     if os.getenv("CEREBRAS_API_KEY"):
         api_key = os.getenv("CEREBRAS_API_KEY")
         base_url = os.getenv("AI_BASE_URL", "https://api.cerebras.ai/v1")
-        model = os.getenv("AI_MODEL", "llama-3.3-70b")
+        model = os.getenv("AI_MODEL", "gpt-oss-120b")
     elif os.getenv("OPENROUTER_API_KEY"):
         api_key = os.getenv("OPENROUTER_API_KEY")
         base_url = os.getenv("AI_BASE_URL", "https://openrouter.ai/api/v1")

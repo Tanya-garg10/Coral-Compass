@@ -64,8 +64,23 @@ def priority(days: int) -> str:
 
 
 # ---------- SQL backends ----------
+def _coral_path():
+    """Locate the coral CLI: PATH first, then ~/.local/bin (Windows install location)."""
+    p = shutil.which("coral") or shutil.which("coral.exe")
+    if p:
+        return p
+    candidates = [
+        Path.home() / ".local" / "bin" / "coral.exe",
+        Path.home() / ".local" / "bin" / "coral",
+    ]
+    for c in candidates:
+        if c.exists():
+            return str(c)
+    return None
+
+
 def coral_available() -> bool:
-    return shutil.which("coral") is not None
+    return _coral_path() is not None
 
 
 def run_duckdb(sql: str) -> pd.DataFrame:
@@ -81,8 +96,9 @@ def run_duckdb(sql: str) -> pd.DataFrame:
 
 def run_coral(sql: str) -> tuple[str, str]:
     """Run a query through the Coral CLI. Returns (stdout, stderr)."""
+    coral = _coral_path() or "coral"
     proc = subprocess.run(
-        ["coral", "sql", sql],
+        [coral, "sql", sql],
         capture_output=True,
         text=True,
         timeout=60,
@@ -197,8 +213,10 @@ def main():
 
     st.sidebar.divider()
     st.sidebar.subheader("Data layer")
-    if coral_available():
+    coral_path = _coral_path()
+    if coral_path:
         st.sidebar.success("Coral CLI: detected ✅")
+        st.sidebar.caption(f"`{coral_path}`")
     else:
         st.sidebar.info("Coral CLI: not on PATH. Using DuckDB fallback.")
 

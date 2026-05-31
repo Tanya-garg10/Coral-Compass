@@ -1,0 +1,40 @@
+name: studysync
+version: 0.1.0
+dsl_version: 3
+backend: file
+tables:
+  - name: assignments
+    description: Student assignments and their deadlines
+    format: csv
+    source:
+      location: file:///C:/Users/arpan/Downloads/coral%20compass/StudySyncAI/
+      glob: "assignments.csv"
+    format_options:
+      has_header: true
+      delimiter: ","
+    columns:
+      - name: subject
+        type: Utf8
+      - name: assignment
+        type: Utf8
+      - name: deadline
+        type: Utf8
+
+  - name: notes
+    description: Study note topics per subject
+    format: csv
+    source:
+      location: file:///C:/Users/arpan/Downloads/coral%20compass/StudySyncAI/
+      glob: "notes.csv"
+    format_options:
+      has_header: true
+      delimiter: ","
+    columns:
+      - name: subject
+        type: Utf8
+      - name: note_topic
+        type: Utf8
+
+test_queries:
+  - SELECT * FROM studysync.assignments LIMIT 1
+  - SELECT * FROM studysync.notes LIMIT 1

@@ -133,18 +133,3 @@ CSV / file sources  ──▶  Coral (SQL over files)  ──▶  Streamlit UI  
                           └── fallback: DuckDB (in-process)
 ```
 
-## 🎬 Demo video script (3 min)
-
-- 0:00–0:30 — Problem: students miss deadlines, notes are scattered.
-- 0:30–1:00 — Architecture: file sources → Coral → AI → Streamlit.
-- 1:00–2:00 — `coral sql` joining `file.assignments` and `file.notes`.
-- 2:00–3:00 — Streamlit dashboard + AI-generated study plan.
-
-## ☁️ Deployment
-
-- **Streamlit Community Cloud** — push to GitHub, deploy from streamlit.io/cloud, set `OPENAI_API_KEY` as a secret. (Coral is local-only, so cloud deployments use the DuckDB fallback automatically.)
-- **Render** — Web Service, build command `pip install -r requirements.txt`, start command `streamlit run app.py --server.port $PORT --server.address 0.0.0.0`.
-
-## 📝 Notes for submission
-
-The build queries CSV/file-based study data via the Coral CLI (with a DuckDB fallback for environments where Coral isn't installed). Calendar / Notion / Drive integrations are not part of this build — match your form description to what's actually shipped.

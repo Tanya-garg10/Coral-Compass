@@ -65,10 +65,23 @@ def priority(days: int) -> str:
 
 # ---------- SQL backends ----------
 def _coral_path():
-    """Locate the coral CLI: PATH first, then ~/.local/bin (Windows install location)."""
+    """Locate the coral CLI.
+    Priority:
+    1. CORAL_PATH env var (explicit override, most reliable)
+    2. shutil.which (PATH-based)
+    3. ~/.local/bin/coral.exe (Windows default install location)
+    """
+    # 1. Explicit env override
+    env_path = os.getenv("CORAL_PATH")
+    if env_path and Path(env_path).exists():
+        return env_path
+
+    # 2. PATH-based
     p = shutil.which("coral") or shutil.which("coral.exe")
     if p:
         return p
+
+    # 3. Default Windows install location
     candidates = [
         Path.home() / ".local" / "bin" / "coral.exe",
         Path.home() / ".local" / "bin" / "coral",
@@ -218,7 +231,10 @@ def main():
         st.sidebar.success("Coral CLI: detected ✅")
         st.sidebar.caption(f"`{coral_path}`")
     else:
-        st.sidebar.info("Coral CLI: not on PATH. Using DuckDB fallback.")
+        st.sidebar.info(
+            "🪸 Coral SQL (local) · DuckDB (cloud)\n\n"
+            "Coral runs locally — see `studysync.coral.yaml` and the demo video for the live integration."
+        )
 
     st.sidebar.subheader("AI provider")
     if os.getenv("CEREBRAS_API_KEY"):
